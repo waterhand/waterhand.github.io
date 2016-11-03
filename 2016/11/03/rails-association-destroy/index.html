@@ -1,0 +1,45 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="alternative" href="/atom.xml" title="Zou" type="application/atom+xml"><link rel="icon" href="/favicon.png"><title>rails-association-destroy - Zou</title><link rel="stylesheet" href="/css/main.css"><!--[if lt IE 9]><script>(function(a,b){a="abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output progress section summary template time video".split(" ");for(b=a.length-1;b>=0;b--)document.createElement(a[b])})()</script><![endif]--></head><body><header class="head"><h1 class="head-title u-fl"><a href="/">Zou</a></h1><nav class="head-nav u-fr"><ul class="head-nav__list"><li class="head-nav__item"><a href="/" class="head-nav__link">Home</a></li><li class="head-nav__item"><a href="/archives" class="head-nav__link">Archives</a></li></ul></nav></header><main class="main"><article class="post"><header class="post__head"><time datetime="2016-11-03T03:34:54.000Z" class="post__time">November 3, 2016</time><h1 class="post__title"><a href="/2016/11/03/rails-association-destroy/">rails-association-destroy</a></h1></header><div class="post__main echo"><h3 id="关联关系的sql操作"><a href="#关联关系的sql操作" class="headerlink" title="关联关系的sql操作"></a>关联关系的sql操作</h3><ol>
+<li><p>通过中间表的多对多关联: 关系: <code>A has_and_belongs_to_many B</code> 查询: <code>A.first.bs</code></p>
+<ul>
+<li>sql的操作：先找到A的记录，然后通过a_b中间表和b表做inner join，找到b表中所有和a_b表有关联记录，然后通过a表的id和a_b中间表的外键的匹配找到这个表和另外一个表的关联数据。</li>
+</ul>
+</li>
+<li><p>belongs_to声明的关联: 关系: <code>A belongs_to B</code> 查询: <code>A.first.b</code></p>
+<ul>
+<li>sql的操作：先找到A的第一个记录，然后通过A表中含有的外键作为条件去B表中查找记录。</li>
+</ul>
+</li>
+<li><p>has_many声明的关联: 关系: <code>A has_many B</code> 查询: <code>A.first.bs</code></p>
+<ul>
+<li>sql的操作：先是找到A的第一个记录，然后通过B表中的外键和a的id做为条件匹配，从而找到另外一个表中和本表中关联到的记录。</li>
+</ul>
+</li>
+</ol>
+<h3 id="删除关联时的外键限制关系"><a href="#删除关联时的外键限制关系" class="headerlink" title="删除关联时的外键限制关系"></a>删除关联时的外键限制关系</h3><p>####参考: <a href="http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#method-i-has_many" target="_blank" rel="external">association has_many</a></p>
+<ol>
+<li><p>rails 中的destroy方法:</p>
+<ul>
+<li>destroy(*records)这个方法主要是在has_many时删除参数中的对象。但是会忽略对象odel中的dependent选项。返回删除的记录。可以执行callback</li>
+<li>instance.destory删除在数据库中的记录，同时会有一些callback</li>
+<li>class.destory(id)删除指定id，这个是类方法。Class.destory(Class.all) == Class.destory_all</li>
+</ul>
+</li>
+<li><p>在 <code>A has_many B</code> 中，在用到destroy方法时就会删除放在方法中的参数的对象。<code>eg: A.first.bs.destroy(b)</code> 就会删除b对象，但是如果在has_many中的model是通过 <code>through: c</code> 这样的参数添加时就不一样了，如果也和上面的例子那样删除只会删除modelc中关联的内容，而不会删除对象b。这里的through options中的c关联到的b是belongs_to的关系才行，如果是has_many的关系则只是read-only，是不能删除的。</p>
+</li>
+<li><p>has_many :through有关删除的关联</p>
+<ul>
+<li><p>现象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">class Apartment &lt; ActiveRecord::Base</div><div class="line">  has_many :apartment_facility_relations</div><div class="line">  has_many :facilities, through: :apartment_facility_relations</div><div class="line">end</div><div class="line">class Facility &lt; ActiveRecord::Base</div><div class="line">  has_many :apartment_facility_relations</div><div class="line">  has_many :apartments, through: :apartment_facility_relations</div><div class="line">end</div><div class="line">class ApartmentFacilityRelation &lt; ActiveRecord::Base</div><div class="line">  belongs_to :apartment</div><div class="line">  belongs_to :facility</div><div class="line">end</div></pre></td></tr></table></figure>
+</li>
+<li><p><code>Apartment.first.destroy</code> 删除一个记录时，如果没有添加dependent选项则默认不会删除中间表，如果想删除中间表，中间表有id可以通过dependent选项去指定级连删除，这种操作是通过id的查找来实现的；但是如果中间表没有id则需要在through那里指定dependent选项才能删除中间表，在 <code>has_many :apartment_facility_relations</code> 中声明会提示错误，可能是关于id的查找时找不到的问题，这个只是猜测，具体原因还不知道。</p>
+<ul>
+<li><code>Apartment.first.facilities.destroy(facility&#39;s object)</code> 则默认会把中间表删除，不会影响到facility对象<br><strong>以上的例子是基于有model的中间表的，如果没有model的中间表，则在用上面的两种情况的destroy时都会默认把中间表删除</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="什么情况下需要指定foreign-key-option"><a href="#什么情况下需要指定foreign-key-option" class="headerlink" title="什么情况下需要指定foreign_key option"></a>什么情况下需要指定foreign_key option</h3><ul>
+<li>由于rails中一些默认的配置问题，可能会引来一些需要自定义的情况。根据rails的约定原则，在A has_many B中，在索引关联关系时会根据外键来进行查找记录，如果没有指定foreign_key选项，这默认会用model_id做为外键，在查找has_many时会先找到本身的一条记录，然后再找B中的全部记录，而条件就是b.foreign_key=a.id，这样的方式去查询；而A belongs_to B则是先找到A的id，然后去找B中的全部记录，条件是A.id=B.foreign_key</li>
+</ul>
+</div><footer class="post__foot u-cf"><ul class="post__tag u-fl"><li class="post__tag__item"><a href="/tags/rails/" class="post__tag__link">rails</a></li><li class="post__tag__item"><a href="/tags/association/" class="post__tag__link">association</a></li><li class="post__tag__item"><a href="/tags/destroy-method/" class="post__tag__link">destroy-method</a></li></ul><a href="/2016/11/03/rails-association-destroy/#disqus_thread" class="post__foot-link u-fr">0 COMMENTS</a></footer></article></main><footer class="foot"><div class="foot-copy u-fl">&copy; 2016 Zou</div><menu class="page-menu u-fr"><li class="page-menu__item"><span title="Previous" class="page-menu__link icon-arrow-left page-menu__link--disabled"></span></li><li class="page-menu__item"><a title="Next" href="/2016/10/18/正则表达式/" class="page-menu__link icon-arrow-right"></a></li></menu></footer></body></html>

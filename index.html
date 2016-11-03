@@ -1,200 +1,67 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  
-  <title>Hexo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://yoursite.com/index.html">
-<meta property="og:site_name" content="Hexo">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
-  
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  <link rel="stylesheet" href="/css/style.css">
-  
-
-</head>
-
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Zoeken"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main">
-  
-    <article id="post-new-beginning" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/10/01/new-beginning/" class="article-date">
-  <time datetime="2016-10-01T03:05:09.000Z" itemprop="datePublished">2016-10-01</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/日志/">日志</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/01/new-beginning/">新的开始</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>这是<strong>新的开始</strong>，我用hexo创建了第一篇文章。</p>
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="alternative" href="/atom.xml" title="Zou" type="application/atom+xml"><link rel="icon" href="/favicon.png"><title>Zou</title><link rel="stylesheet" href="/css/main.css"><!--[if lt IE 9]><script>(function(a,b){a="abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output progress section summary template time video".split(" ");for(b=a.length-1;b>=0;b--)document.createElement(a[b])})()</script><![endif]--></head><body><header class="head"><h1 class="head-title u-fl"><a href="/">Zou</a></h1><nav class="head-nav u-fr"><ul class="head-nav__list"><li class="head-nav__item"><a href="/" class="head-nav__link">Home</a></li><li class="head-nav__item"><a href="/archives" class="head-nav__link">Archives</a></li></ul></nav></header><main class="main"><article class="post"><header class="post__head"><time datetime="2016-11-03T03:34:54.000Z" class="post__time">November 3, 2016</time><h1 class="post__title"><a href="/2016/11/03/rails-association-destroy/">rails-association-destroy</a></h1></header><div class="post__main echo"><h3 id="关联关系的sql操作"><a href="#关联关系的sql操作" class="headerlink" title="关联关系的sql操作"></a>关联关系的sql操作</h3><ol>
+<li><p>通过中间表的多对多关联: 关系: <code>A has_and_belongs_to_many B</code> 查询: <code>A.first.bs</code></p>
+<ul>
+<li>sql的操作：先找到A的记录，然后通过a_b中间表和b表做inner join，找到b表中所有和a_b表有关联记录，然后通过a表的id和a_b中间表的外键的匹配找到这个表和另外一个表的关联数据。</li>
+</ul>
+</li>
+<li><p>belongs_to声明的关联: 关系: <code>A belongs_to B</code> 查询: <code>A.first.b</code></p>
+<ul>
+<li>sql的操作：先找到A的第一个记录，然后通过A表中含有的外键作为条件去B表中查找记录。</li>
+</ul>
+</li>
+<li><p>has_many声明的关联: 关系: <code>A has_many B</code> 查询: <code>A.first.bs</code></p>
+<ul>
+<li>sql的操作：先是找到A的第一个记录，然后通过B表中的外键和a的id做为条件匹配，从而找到另外一个表中和本表中关联到的记录。</li>
+</ul>
+</li>
+</ol>
+<h3 id="删除关联时的外键限制关系"><a href="#删除关联时的外键限制关系" class="headerlink" title="删除关联时的外键限制关系"></a>删除关联时的外键限制关系</h3><p>####参考: <a href="http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#method-i-has_many" target="_blank" rel="external">association has_many</a></p>
+<ol>
+<li><p>rails 中的destroy方法:</p>
+<ul>
+<li>destroy(*records)这个方法主要是在has_many时删除参数中的对象。但是会忽略对象odel中的dependent选项。返回删除的记录。可以执行callback</li>
+<li>instance.destory删除在数据库中的记录，同时会有一些callback</li>
+<li>class.destory(id)删除指定id，这个是类方法。Class.destory(Class.all) == Class.destory_all</li>
+</ul>
+</li>
+<li><p>在 <code>A has_many B</code> 中，在用到destroy方法时就会删除放在方法中的参数的对象。<code>eg: A.first.bs.destroy(b)</code> 就会删除b对象，但是如果在has_many中的model是通过 <code>through: c</code> 这样的参数添加时就不一样了，如果也和上面的例子那样删除只会删除modelc中关联的内容，而不会删除对象b。这里的through options中的c关联到的b是belongs_to的关系才行，如果是has_many的关系则只是read-only，是不能删除的。</p>
+</li>
+<li><p>has_many :through有关删除的关联</p>
+<ul>
+<li><p>现象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">class Apartment &lt; ActiveRecord::Base</div><div class="line">  has_many :apartment_facility_relations</div><div class="line">  has_many :facilities, through: :apartment_facility_relations</div><div class="line">end</div><div class="line">class Facility &lt; ActiveRecord::Base</div><div class="line">  has_many :apartment_facility_relations</div><div class="line">  has_many :apartments, through: :apartment_facility_relations</div><div class="line">end</div><div class="line">class ApartmentFacilityRelation &lt; ActiveRecord::Base</div><div class="line">  belongs_to :apartment</div><div class="line">  belongs_to :facility</div><div class="line">end</div></pre></td></tr></table></figure>
+</li>
+<li><p><code>Apartment.first.destroy</code> 删除一个记录时，如果没有添加dependent选项则默认不会删除中间表，如果想删除中间表，中间表有id可以通过dependent选项去指定级连删除，这种操作是通过id的查找来实现的；但是如果中间表没有id则需要在through那里指定dependent选项才能删除中间表，在 <code>has_many :apartment_facility_relations</code> 中声明会提示错误，可能是关于id的查找时找不到的问题，这个只是猜测，具体原因还不知道。</p>
+<ul>
+<li><code>Apartment.first.facilities.destroy(facility&#39;s object)</code> 则默认会把中间表删除，不会影响到facility对象<br><strong>以上的例子是基于有model的中间表的，如果没有model的中间表，则在用上面的两种情况的destroy时都会默认把中间表删除</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="什么情况下需要指定foreign-key-option"><a href="#什么情况下需要指定foreign-key-option" class="headerlink" title="什么情况下需要指定foreign_key option"></a>什么情况下需要指定foreign_key option</h3><ul>
+<li>由于rails中一些默认的配置问题，可能会引来一些需要自定义的情况。根据rails的约定原则，在A has_many B中，在索引关联关系时会根据外键来进行查找记录，如果没有指定foreign_key选项，这默认会用model_id做为外键，在查找has_many时会先找到本身的一条记录，然后再找B中的全部记录，而条件就是b.foreign_key=a.id，这样的方式去查询；而A belongs_to B则是先找到A的id，然后去找B中的全部记录，条件是A.id=B.foreign_key</li>
+</ul>
+</div><footer class="post__foot u-cf"><ul class="post__tag u-fl"><li class="post__tag__item"><a href="/tags/rails/" class="post__tag__link">rails</a></li><li class="post__tag__item"><a href="/tags/association/" class="post__tag__link">association</a></li><li class="post__tag__item"><a href="/tags/destroy-method/" class="post__tag__link">destroy-method</a></li></ul><a href="/2016/11/03/rails-association-destroy/#disqus_thread" class="post__foot-link u-fr">0 COMMENTS</a></footer></article><article class="post"><header class="post__head"><time datetime="2016-10-18T08:52:01.000Z" class="post__time">October 18, 2016</time><h1 class="post__title"><a href="/2016/10/18/正则表达式/">正则表达式</a></h1></header><div class="post__main echo"><h3 id="正则表达式常规用法"><a href="#正则表达式常规用法" class="headerlink" title="正则表达式常规用法"></a>正则表达式常规用法</h3><h4 id="取反义"><a href="#取反义" class="headerlink" title="取反义:"></a>取反义:</h4><ul>
+<li>平常需要用到不属于某个简单定义的字符类的字符，比如\d是匹配数字，但是有时候希望在一个输入中不需要数字，则可以用\D来进行取反操作。<br>例子:<br>一个html.txt文件中有如下的内容:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;b&gt;This&lt;/b&gt; is what &lt;span style=&quot;text-decoration: underline;&quot;&gt;I&lt;/span&gt; meant. Understand?</div></pre></td></tr></table></figure>
+<p>但是我们希望可以把标签去掉，如果用sed流编辑器去除，用 <code>sed &#39;s/&lt;.*&gt;//&#39; html.txt</code> 就会出问题，其中的 <code>.*</code> 会把第一个&lt;和最后一个&gt;中间的内容都包含进去，达不到去除标签的效果，这时就可以用到取反的操作了 <code>sed &#39;s/&lt;[^&gt;]*&gt;//&#39; html.txt&#39;</code> 用了取反就可以排除&gt;符号的匹配了。</p>
+<h4 id="涉及到分组的问题："><a href="#涉及到分组的问题：" class="headerlink" title="涉及到分组的问题："></a>涉及到分组的问题：</h4><ul>
+<li>如果对于一些常规的重复 <code>\d{n}</code> 可以表示重复出现n次的数字，但是这些重复的过程是有一定的简单定义的集合的过程，如果希望重复一个不规则的过程则需要用到分组的知识了，分组可以用一个括号括起来，因为有这个语法，所以为了避免解析出错，在些正则匹配括号时需要加上转义斜杆。一个普遍的匹配是ip地址的匹配用到分组比较多。</li>
+</ul>
+<h4 id="后向引用："><a href="#后向引用：" class="headerlink" title="后向引用："></a>后向引用：</h4><ul>
+<li>对于后向引用可以理解为前面的小分组在后面得到了引用，每个小分组都会又一个组号，按从左到右的顺序，第一个出现做括号的分组为1，第二个为2…，<br>比如要匹配单词go go就需要用到这样的例子，可以用正则式 <code>(\b\w+\b)\1\b</code></li>
+</ul>
+<ul>
+<li>参考: <a href="http://deerchao.net/tutorials/regex/regex.htm#negation" target="_blank" rel="external">正则表达式30分钟入门教程</a></li>
+</ul>
+</div><footer class="post__foot u-cf"><ul class="post__tag u-fl"><li class="post__tag__item"><a href="/tags/正则表达式/" class="post__tag__link">正则表达式</a></li></ul><a href="/2016/10/18/正则表达式/#disqus_thread" class="post__foot-link u-fr">0 COMMENTS</a></footer></article><article class="post"><header class="post__head"><time datetime="2016-10-18T04:34:21.000Z" class="post__time">October 18, 2016</time><h1 class="post__title"><a href="/2016/10/18/使用linux-sed命令行/">使用linux-sed命令行</a></h1></header><div class="post__main echo"><p><code>sed -i -e &#39;s/$/\)/;N&#39; fontent-link.md</code> 把在单数行后面添加字符串</p>
+<ul>
+<li>改变奇数行 <code>sed &#39;s/A/B/;N&#39; somefile</code> </li>
+<li>gnu sed <code>sed &#39;1~2 s/A/B/g&#39; file</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed -n &apos;/^[^ ]/&#123;s/^\([^ ]*\) .*/\1/g;h;: top;n;/^$/b;s/^.*RX bytes:\([0-9]\&#123;1,\&#125;\).*/\1/g;T top;H;x;s/\n/:/g;p&#125;&apos; ifconfig.out</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">#!/usr/bin/sed -f</div><div class="line"> </div><div class="line">/^[^ ]/&#123;</div><div class="line">s/^\([^ ]*\) .*/\1/g;</div><div class="line">h;</div><div class="line">: top;</div><div class="line">n;</div><div class="line">/^$/b;</div><div class="line">s/^.*RX bytes:\([0-9]\&#123;1,\&#125;\).*/\1/g;</div><div class="line">T top;</div><div class="line">H;</div><div class="line">x;</div><div class="line">s/\n/:/g;</div><div class="line"># p;</div><div class="line">w result</div><div class="line">&#125;</div></pre></td></tr></table></figure></div><footer class="post__foot u-cf"><ul class="post__tag u-fl"><li class="post__tag__item"><a href="/tags/linux/" class="post__tag__link">linux</a></li><li class="post__tag__item"><a href="/tags/sed/" class="post__tag__link">sed</a></li><li class="post__tag__item"><a href="/tags/例子/" class="post__tag__link">例子</a></li></ul><a href="/2016/10/18/使用linux-sed命令行/#disqus_thread" class="post__foot-link u-fr">0 COMMENTS</a></footer></article><article class="post"><header class="post__head"><time datetime="2016-10-01T03:05:09.000Z" class="post__time">October 1, 2016</time><h1 class="post__title"><a href="/2016/10/01/new-beginning/">新的开始</a></h1></header><div class="post__main echo"><p>这是<strong>新的开始</strong>，我用hexo创建了第一篇文章。</p>
 <p>感觉非常好。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/10/01/new-beginning/" data-id="ciudha4yj0001y54wwelq09v5" class="article-share-link">Delen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开始/">开始</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/我/">我</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/日记/">日记</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Categorieën</h3>
-    <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/日志/">日志</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Labels</h3>
-    <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/开始/">开始</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/我/">我</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日记/">日记</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/开始/" style="font-size: 10px;">开始</a> <a href="/tags/我/" style="font-size: 10px;">我</a> <a href="/tags/日记/" style="font-size: 10px;">日记</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archieven</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recente berichten</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2016/10/01/new-beginning/">新的开始</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2016 John Doe<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-
-
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-<script src="/js/script.js"></script>
-
-  </div>
-</body>
-</html>
+</div><footer class="post__foot u-cf"><ul class="post__tag u-fl"><li class="post__tag__item"><a href="/tags/开始/" class="post__tag__link">开始</a></li><li class="post__tag__item"><a href="/tags/我/" class="post__tag__link">我</a></li><li class="post__tag__item"><a href="/tags/日记/" class="post__tag__link">日记</a></li></ul><a href="/2016/10/01/new-beginning/#disqus_thread" class="post__foot-link u-fr">0 COMMENTS</a></footer></article></main><footer class="foot"><div class="foot-copy u-fl">&copy; 2016 Zou</div><menu class="page-menu u-fr"><li class="page-menu__item"><span title="Previous" class="page-menu__link icon-arrow-left page-menu__link--disabled"></span></li><li class="page-menu__item"><span title="Next" class="page-menu__link icon-arrow-right page-menu__link--disabled"></span></li></menu></footer></body></html>
