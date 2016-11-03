@@ -15,8 +15,7 @@
 </ul>
 </li>
 </ol>
-<h3 id="删除关联时的外键限制关系"><a href="#删除关联时的外键限制关系" class="headerlink" title="删除关联时的外键限制关系"></a>删除关联时的外键限制关系</h3><p>####参考: <a href="http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#method-i-has_many" target="_blank" rel="external">association has_many</a></p>
-<ol>
+<h3 id="删除关联时的外键限制关系"><a href="#删除关联时的外键限制关系" class="headerlink" title="删除关联时的外键限制关系"></a>删除关联时的外键限制关系</h3><h4 id="参考-association-has-many"><a href="#参考-association-has-many" class="headerlink" title="参考: association has_many"></a>参考: <a href="http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#method-i-has_many" target="_blank" rel="external">association has_many</a></h4><ol>
 <li><p>rails 中的destroy方法:</p>
 <ul>
 <li>destroy(*records)这个方法主要是在has_many时删除参数中的对象。但是会忽略对象odel中的dependent选项。返回删除的记录。可以执行callback</li>
